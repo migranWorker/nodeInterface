@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1></h1>
+        <h1></h1>
+        <h1></h1>
+        <h1></h1>
+    </div>
+    <script>
+        $('button').eq(0).on('click',function(){
+            let userNum = $('input').eq(0).val();  
+            let userPsd = $('input').eq(1).val();  
+            $.ajax({
+                url:'http://localhost:3000/user/login',
+                type:'POST',
+                data:{
+                    userNum,
+                    userPsd
+                },
+                success(data){
+                   localStorage.setItem('token',data.token);
+                }
+            })
+        })
+        $('button').eq(1).on('click',function(){
+            window.location.href="register.html";
+        })
+        $(function(){
+            $.ajax({
+                url:`http://localhost:3000/user/mine?token=${localStorage.getItem('token')}`,
+                type:'GET',
+                success(data){
+                   let msg = data.data;
+                   console.log(msg);
+                   if(msg){
+                       $('h1').eq(0).html(data.data._id);
+                       $('h1').eq(1).html(data.data.userName);
+                       $('h1').eq(2).html(data.data.userNum);
+                       $('h1').eq(3).html(data.data.userPsd);
+                   }else{
+                        $('h1').eq(0).html(data.error);
+                   }
+                }
+            })
+        })
+    </script>
+</body>
+</html>
